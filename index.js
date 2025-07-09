@@ -2,6 +2,9 @@ const { Client, GatewayIntentBits, Partials, PermissionsBitField } = require("di
 const fs = require('fs');
 require('dotenv').config();
 const path = require('path');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000; // 환경 변수 PORT 사용
 
 const client = new Client({
   intents: [
@@ -28,6 +31,15 @@ const GIPHY_API_KEY = process.env.GIPHY_API_KEY;
 const userVoiceJoinTimes = new Map();
 
 let questions = [];
+
+
+app.get('/health', (req, res) => {
+  res.status(200).send('OK'); // 헬스 체크 응답
+});
+
+app.listen(port, () => {
+  console.log(`[INFO] 헬스 체크 서버가 포트 ${port}에서 실행 중입니다.`);
+});
 
 function loadQuestions() {
   try {
@@ -211,11 +223,9 @@ client.on("messageCreate", async (message) => {
       const topDiscounts = specials
         .slice(0, maxCount)
         .map((game) => {
-          return `🎮 [${game.name}](https://store.steampowered.com/app/${
-            game.id
-          })\n- 할인율: ${game.discount_percent}%\n- 현재가: ${
-            game.final_price / 100
-          }원`;
+          return `🎮 [${game.name}](https://store.steampowered.com/app/${game.id
+            })\n- 할인율: ${game.discount_percent}%\n- 현재가: ${game.final_price / 100
+            }원`;
         })
         .join("\n\n");
       await message.reply({
@@ -310,8 +320,7 @@ client.on("messageDelete", async (message) => {
   const logChannel = message.guild.channels.cache.get(LOG_CHANNEL_ID);
   if (logChannel) {
     await logChannel.send(
-      `🗑️ ${message.member?.displayName || message.author?.username} (${
-        message.channel.name
+      `🗑️ ${message.member?.displayName || message.author?.username} (${message.channel.name
       }): 삭제된 메시지 - ${message.content || "[임베드/첨부파일/알 수 없음]"}`
     );
   }
