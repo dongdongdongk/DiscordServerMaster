@@ -337,7 +337,7 @@ client.on("ready", async () => {
         sendRandomQuestion(logChannel);
       }
     }
-  }, 1000 * 60 * 60); // 15분마다 실행
+  }, 1000 * 60 * 360); // 15분마다 실행
 });
 
 client.login(BOT_TOKEN);
