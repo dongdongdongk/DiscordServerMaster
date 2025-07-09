@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, Partials, PermissionsBitField } = require("discord.js");
 const fs = require('fs');
 require('dotenv').config();
+const path = require('path');
 
 const client = new Client({
   intents: [
@@ -30,11 +31,12 @@ let questions = [];
 
 function loadQuestions() {
   try {
-    const data = fs.readFileSync('/mnt/f/2024WebProject/DiscordServerMaster/bot.txt', 'utf8');
+    const filePath = path.join(__dirname, 'bot.txt'); // 현재 파일의 디렉토리에 있는 bot.txt
+    const data = fs.readFileSync(filePath, 'utf8');
     questions = data.split('\n').filter(line => line.trim() !== '');
     console.log(`[INFO] ${questions.length}개의 질문을 불러왔습니다.`);
     if (questions.length === 0) {
-        console.log('[WARN] bot.txt 파일이 비어있거나 질문이 없습니다.');
+      console.log('[WARN] bot.txt 파일이 비어있거나 질문이 없습니다.');
     }
   } catch (err) {
     console.error('[ERROR] bot.txt 파일을 읽는 중 오류가 발생했습니다.', err);
